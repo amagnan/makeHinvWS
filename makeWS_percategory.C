@@ -30,8 +30,33 @@ enum PROCESS{
   QCD = 9
 };
 
+enum CATEGORY{
+  //MTR = 0,
+  //VTR = 1
+  MTRC = 0,
+  MTRF = 1,
+  VTRC = 2,
+  VTRF = 3,
+  last
+};
 
-int makeWS_percategory(std::string year="2017", std::string cat="MTR"){
+std::string categ(const CATEGORY & aCat){
+  if (aCat==CATEGORY::MTRC) return "MTRC";
+  else if (aCat==CATEGORY::MTRF) return "MTRF";
+  else if (aCat==CATEGORY::VTRC) return "VTRC";
+  else if (aCat==CATEGORY::VTRF) return "VTRF";
+  return "UNKNOWN";
+};
+
+CATEGORY categ(const std::string aCat){
+  if (aCat=="MTRC") return CATEGORY::MTRC;
+  else if (aCat=="MTRF") return CATEGORY::MTRF;
+  else if (aCat=="VTRC") return CATEGORY::VTRC;
+  else if (aCat=="VTRF") return CATEGORY::VTRF;
+  return CATEGORY::last;
+};
+
+int makeWS_percategory(std::string year="2017", std::string cat="MTRC"){
   
   const bool doSamSetup = true;
   
@@ -49,6 +74,9 @@ int makeWS_percategory(std::string year="2017", std::string cat="MTR"){
   std::string lCategory = cat+"_";
   std::string lYear = year+"_";
   std::string lOutFileName = "param_ws_"+lCategory+lYear+lChannel+".root";
+
+  CATEGORY catEnum = categ(cat);
+  std::string catShort = (catEnum<2)? "MTR" : "VTR";
 
   //define the variable that is fitted
   RooRealVar lVarFit(("mjj_"+cat+"_"+year).c_str(),"M_{jj} (GeV)",200,5000);
@@ -170,7 +198,7 @@ int makeWS_percategory(std::string year="2017", std::string cat="MTR"){
   //and one histogram per process with name as in lProcs with shape of the variable that is fitted.
   std::string lInFileName[nR];
   for (unsigned iR(0); iR<nR; ++iR){     
-    lInFileName[iR] = "out_VBF_ana_"+lRegions[iR]+"_"+year+"_v"+cat+"_"+year+"_200109/VBF_shapes.root";
+    lInFileName[iR] = "out_VBF_ana_"+lRegions[iR]+"_"+year+"_v"+catShort+"_"+year+"_200109/VBF_shapes.root";
   }
 
   std::string lInFileName_Sam = "WJetsToLNu.root";

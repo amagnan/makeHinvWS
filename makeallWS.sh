@@ -1,14 +1,14 @@
 cmsenv
-cd test_df_MTR_2017_2020v1
-root -b '../makeallWS.C("2017","MTR")'
-root -b '../makeSWS.C("2017","MTR")'
-cd ../test_df_MTR_2018_2020v1
-root -b '../makeallWS.C("2018","MTR")'
-root -b '../makeSWS.C("2018","MTR")'
-cd ../test_df_VTR_2017_2020v1
-root -b '../makeallWS.C("2017","VTR")'
-root -b '../makeSWS.C("2017","VTR")'
-cd ../test_df_VTR_2018_2020v1
-root -b '../makeallWS.C("2018","VTR")'
-root -b '../makeSWS.C("2018","VTR")'
-cd ../
+
+for year in 2017 2018;
+do
+    for categ in MTRC VTRC MTRF VTRF;
+    do
+
+	cd test_df_${categ}_${year}_2020v1
+	root -b "../makeallWS.C(\"${year}\",\"${categ}\")"
+	root -b "../makeSWS.C(\"${year}\",\"${categ}\")"
+	cd ../
+    done
+done
+

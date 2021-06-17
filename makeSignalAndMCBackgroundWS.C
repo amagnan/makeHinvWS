@@ -25,10 +25,12 @@
 enum PROCESS{
   VBFH   = 0,
   ggH    = 1,
-  TOP    = 2,
-  VV     = 3,
-  DY     = 4,
-  EWKZll = 5
+  VH     = 2,
+  ttH    = 3,
+  TOP    = 4,
+  VV     = 5,
+  DY     = 6,
+  EWKZll = 7
 };
 
 double findmax(TH1F *h){
@@ -117,6 +119,7 @@ void makeSignalAndMCBackgroundWS(std::string year="2017", std::string cat="MTR")
 
 
   const bool doSamSetup = true;
+  const bool doEMSF = false;
   
   const bool is2017 = year=="2017";
   std::string lChannel = "VBF";
@@ -136,12 +139,12 @@ void makeSignalAndMCBackgroundWS(std::string year="2017", std::string cat="MTR")
   
   TFile *finputJES = TFile::Open("../vbf_shape_jes_uncs_smooth.root");
   
-  const unsigned nP = 6;
+  const unsigned nP = 8;
   //!! Mind that order is the same as in PROCESS enum above !!
-  std::string lProcs[nP]    = {"VBFHtoInv","GluGluHtoInv","TOP","VV","DY","EWKZll"};
-  std::string lJESLabel[nP] = {"VBF","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","EWKZ2Jets_ZToNuNu"};  // for now, use the Z->vv sample calculation for ggH, VV and Top
+  std::string lProcs[nP]    = {"VBFHtoInv","GluGluHtoInv","VH","ttH","TOP","VV","DY","EWKZll"};
+  std::string lJESLabel[nP] = {"VBF","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","EWKZ2Jets_ZToNuNu"};  // for now, use the Z->vv sample calculation for ggH, VH, ttH, VV and Top
   
-  const unsigned nN = 17;
+  const unsigned nN = doEMSF ? 17 : 16;
   std::string lSysts[nN] = {"bjet_veto","pileup","tau_veto",
 			    "eventVetoVEleIdIso", "eventVetoVEleReco", 
 			    "eventVetoLMuId","eventVetoLMuIso",
@@ -149,7 +152,7 @@ void makeSignalAndMCBackgroundWS(std::string year="2017", std::string cat="MTR")
 			    "eventSelVEleIdIso","eventSelVEleReco", 
 			    "eventSelTMuId","eventSelTMuIso",
 			    "eventSelLMuId","eventSelLMuIso",
-			    "jetemSF","prefiring"
+			    "prefiring","jetemSF"
   };
 
   //hardcode bool for skipping syst for given proc
@@ -160,13 +163,13 @@ void makeSignalAndMCBackgroundWS(std::string year="2017", std::string cat="MTR")
     }
   }
   
-  skipSyst[PROCESS::TOP][16] = true;
-  skipSyst[PROCESS::VV][16] = true;
-  skipSyst[PROCESS::DY][16] = true;
-  skipSyst[PROCESS::EWKZll][16] = true;
+  skipSyst[PROCESS::TOP][nN-1] = true;
+  skipSyst[PROCESS::VV][nN-1] = true;
+  skipSyst[PROCESS::DY][nN-1] = true;
+  skipSyst[PROCESS::EWKZll][nN-1] = true;
 
 
-  std::string lSystsCMS[nN] = {
+  std::string lSystsCMS[17] = {
     "CMS_eff_bveto","CMS_pileup","CMS_eff_tauveto",
     "CMS_eff_eVeto_idiso_veto","CMS_eff_eVeto_reco_veto",
     "CMS_eff_muLoose_id_veto","CMS_eff_muLoose_iso_veto",
@@ -174,10 +177,10 @@ void makeSignalAndMCBackgroundWS(std::string year="2017", std::string cat="MTR")
     "CMS_eff_eVeto_idiso","CMS_eff_eVeto_reco",
     "CMS_eff_muTight_id","CMS_eff_muTight_iso",
     "CMS_eff_muLoose_id","CMS_eff_muLoose_iso",
-    "CMS_eff_jetNEMF","CMS_L1prefire"
+    "CMS_L1prefire","CMS_eff_jetNEMF"
   };
   
-  const bool corrCat[nN] = {1,1,1,
+  const bool corrCat[17] = {1,1,1,
 			    1,1,
 			    1,1,
 			    1,1,
@@ -186,7 +189,7 @@ void makeSignalAndMCBackgroundWS(std::string year="2017", std::string cat="MTR")
 			    1,1,
 			    1,1
   };
-  const bool corrYear[nN] = {1,1,0,
+  const bool corrYear[17] = {1,1,0,
 			     0,1,
 			     1,1,
 			     0,1,
@@ -230,12 +233,13 @@ void makeSignalAndMCBackgroundWS(std::string year="2017", std::string cat="MTR")
     std::string channel=""; 
     if ( doSamSetup && iR>0 ) channel="VBF";
     for (unsigned iP(0); iP<nP; ++iP){
-      if (iR>0 and iP<2) continue;
+      if (iR>0 and iP<PROCESS::TOP) continue;
       std::cout << " central histogram -- " << Form("%s%s/%s",lRegions[iR].c_str(),channel.c_str(),lProcs[iP].c_str()) << std::endl; 
       TH1F* Thist = (TH1F*)finput->Get(Form("%s%s/%s",lRegions[iR].c_str(),channel.c_str(),lProcs[iP].c_str()));
       
       if (!Thist) {
 	std::cout << " Histo " << Form("%s%s/%s",lRegions[iR].c_str(),channel.c_str(),lProcs[iP].c_str()) << " not found." << std::endl;
+	//continue;
 	return ;
       }
       RooDataHist *hist = new RooDataHist((lProcs[iP]+"_hist_"+lRegions[iR]).c_str(),"Process",vars,Thist);

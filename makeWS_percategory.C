@@ -27,13 +27,16 @@ enum PROCESS{
   EWKW = 6,
   QCDDYll = 7,
   EWKZll = 8,
-  QCD = 9
+  QCD = 9,
+  VH = 10,
+  ttH = 11
 };
 
 
 int makeWS_percategory(std::string year="2017", std::string cat="MTR"){
   
   const bool doSamSetup = true;
+  const bool doEMSF = false;
   
   const bool is2017 = year=="2017";
   const std::string shortYear = is2017 ? "17" : "18";
@@ -61,11 +64,12 @@ int makeWS_percategory(std::string year="2017", std::string cat="MTR"){
   //processes
   //!! SAME ORDER AS IN ENUM PROCESS ABOVE !!!!
   //use same order: data= process 0, signal = process 1, QCD Z+Jets in SR = 2, etc....
-  const unsigned nP = 10;
-  std::string lProcs[nP] = {"data_obs","VBFHtoInv","GluGluHtoInv",
+  const unsigned nP = 12;
+  std::string lProcs[12] = {"data_obs","VBFHtoInv","GluGluHtoInv",
 			    "ZJETS","EWKZNUNU",
 			    "WJETS","EWKW",
-			    "DY","EWKZll","QCD"};
+			    "DY","EWKZll","QCD",
+			    "VH","ttH"};
 
   const unsigned nNLO = 4;
   std::string lNLOname[4] = {
@@ -74,8 +78,7 @@ int makeWS_percategory(std::string year="2017", std::string cat="MTR"){
     "fnlo_SF_QCD_corr_QCD_proc_pdfUp",
     "fnlo_SF_EWK_corrUp",
   };
-  
-  const unsigned nN = is2017 ? 17 : 16;
+  const unsigned nN = doEMSF ? (is2017 ? 17 : 16) : (is2017 ? 17 : 15);
   std::string lNuis[17] = {"bjet_veto","pileup","tau_veto",
 			   "eventVetoVEleIdIso","eventVetoLMuId","eventVetoLMuIso",
 			   "eventSelTEleIdIso","eventSelTMuId","eventSelTMuIso",
@@ -105,7 +108,7 @@ int makeWS_percategory(std::string year="2017", std::string cat="MTR"){
 			     0,1,1,
 			     0,1,1,
 			     1,1,1,
-			     0,1
+			     0,0
   };
 
   const unsigned nS = 2*nN+1;
@@ -134,7 +137,7 @@ int makeWS_percategory(std::string year="2017", std::string cat="MTR"){
 			     0,0,0,0,0,
 			     0,0,0,0,0,
 			     0,0,0,0,1,1,
-			     1,1,1,1
+			     doEMSF?1:0,doEMSF?1:0,1,1
   };
     
   const bool isCRWsyst[35] = {1,1,1,1,1,
@@ -143,7 +146,7 @@ int makeWS_percategory(std::string year="2017", std::string cat="MTR"){
 			      1,1,1,1,0,
 			      0,0,0,0,0,
 			      0,0,1,1,0,0,
-			      1,1,1,1
+			      doEMSF?1:0,doEMSF?1:0,1,1
   };
 
 
@@ -153,7 +156,7 @@ int makeWS_percategory(std::string year="2017", std::string cat="MTR"){
 			      1,1,1,1,1,
 			      1,1,1,1,1,
 			      1,1,1,1,0,0,
-			      1,1,1,1
+			      doEMSF?1:0,doEMSF?1:0,1,1
   };
 
   //possibility to override nuisances with hardcoded values
@@ -241,7 +244,7 @@ int makeWS_percategory(std::string year="2017", std::string cat="MTR"){
     else finput[iR]->cd(lRegions[iR].c_str());
       
     if (lRegions[iR] == "SR"){
-      for (unsigned iP(3); iP<7; ++iP){
+      for (unsigned iP(PROCESS::QCDZnunu); iP<PROCESS::QCDDYll; ++iP){
 	for (unsigned iS(0); iS < nNLO; ++iS){
 	  if (iP>0) {
 	    histosNLO[iP][iS] = (TH1F*)gDirectory->Get((lProcs[iP]+"_"+lNLOname[iS]).c_str());

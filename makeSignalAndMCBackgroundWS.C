@@ -145,7 +145,7 @@ void makeSignalAndMCBackgroundWS(std::string year="2017", std::string cat="MTR")
   std::string lJESLabel[nP] = {"VBF","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","EWKZ2Jets_ZToNuNu"};  // for now, use the Z->vv sample calculation for ggH, VH, ttH, VV and Top
   
   const unsigned nN = doEMSF ? 17 : 16;
-  std::string lSysts[nN] = {"bjet_veto","pileup","tau_veto",
+  std::string lSysts[17] = {"bjet_veto","pileup","tau_veto",
 			    "eventVetoVEleIdIso", "eventVetoVEleReco", 
 			    "eventVetoLMuId","eventVetoLMuIso",
 			    "eventSelTEleIdIso","eventSelTEleReco",

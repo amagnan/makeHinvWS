@@ -28,8 +28,10 @@ enum PROCESS{
   QCDDYll = 7,
   EWKZll = 8,
   QCD = 9,
-  VH = 10,
-  ttH = 11
+  WH = 10,
+  qqZH = 11,
+  ggZH = 12,
+  ttH = 13
 };
 
 
@@ -64,12 +66,13 @@ int makeWS_percategory(std::string year="2017", std::string cat="MTR"){
   //processes
   //!! SAME ORDER AS IN ENUM PROCESS ABOVE !!!!
   //use same order: data= process 0, signal = process 1, QCD Z+Jets in SR = 2, etc....
-  const unsigned nP = 12;
-  std::string lProcs[12] = {"data_obs","VBFHtoInv","GluGluHtoInv",
+  const unsigned nP = 14;
+  std::string lProcs[14] = {"data_obs","VBFHtoInv","GluGluHtoInv",
 			    "ZJETS","EWKZNUNU",
 			    "WJETS","EWKW",
 			    "DY","EWKZll","QCD",
-			    "VH","ttH"};
+			    "WH","qqZH","ggZH",
+			    "ttH"};
 
   const unsigned nNLO = 4;
   std::string lNLOname[4] = {

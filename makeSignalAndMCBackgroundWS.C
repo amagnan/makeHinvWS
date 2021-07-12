@@ -25,12 +25,14 @@
 enum PROCESS{
   VBFH   = 0,
   ggH    = 1,
-  VH     = 2,
-  ttH    = 3,
-  TOP    = 4,
-  VV     = 5,
-  DY     = 6,
-  EWKZll = 7
+  WH     = 2,
+  qqZH   = 3,
+  ggZH   = 4,
+  ttH    = 5,
+  TOP    = 6,
+  VV     = 7,
+  DY     = 8,
+  EWKZll = 9
 };
 
 double findmax(TH1F *h){
@@ -139,10 +141,10 @@ void makeSignalAndMCBackgroundWS(std::string year="2017", std::string cat="MTR")
   
   TFile *finputJES = TFile::Open("../vbf_shape_jes_uncs_smooth.root");
   
-  const unsigned nP = 8;
+  const unsigned nP = 10;
   //!! Mind that order is the same as in PROCESS enum above !!
-  std::string lProcs[nP]    = {"VBFHtoInv","GluGluHtoInv","VH","ttH","TOP","VV","DY","EWKZll"};
-  std::string lJESLabel[nP] = {"VBF","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","EWKZ2Jets_ZToNuNu"};  // for now, use the Z->vv sample calculation for ggH, VH, ttH, VV and Top
+  std::string lProcs[nP]    = {"VBFHtoInv","GluGluHtoInv","WH","qqZH","ggZH","ttH","TOP","VV","DY","EWKZll"};
+  std::string lJESLabel[nP] = {"VBF","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","ZJetsToNuNu","EWKZ2Jets_ZToNuNu"};  // for now, use the Z->vv sample calculation for ggH, WH, qqZH, ggZH, ttH, VV and Top
   
   const unsigned nN = doEMSF ? 17 : 16;
   std::string lSysts[17] = {"bjet_veto","pileup","tau_veto",
